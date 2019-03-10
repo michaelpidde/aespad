@@ -1,0 +1,33 @@
+﻿<Window x:Class="AesPad.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AesPad"
+        Title="AesPad" Height="450" Width="800" Initialized="Window_Initialized">
+    <Grid>
+        <Menu x:Name="mainMenu" Height="30" VerticalAlignment="Top">
+            <MenuItem Header="_File" Height="30">
+                <MenuItem x:Name="newFile" Header="_New" Click="newFile_Click"/>
+                <MenuItem x:Name="openFile" Header="_Open" Click="openFile_Click"/>
+                <MenuItem x:Name="saveFile" Header="_Save" IsEnabled="False" Click="saveFile_Click"/>
+                <MenuItem x:Name="saveFileAs" Header="Save _As"/>
+                <MenuItem x:Name="close" Header="_Close" Click="close_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Help" Height="30">
+                <MenuItem Header="_About"/>
+            </MenuItem>
+        </Menu>
+        <TextBox x:Name="mainContent" 
+                 Margin="0,30,0,0" 
+                 TextWrapping="Wrap" 
+                 AcceptsReturn="True" 
+                 AcceptsTab="True" 
+                 HorizontalContentAlignment="Stretch" 
+                 VerticalContentAlignment="Stretch" 
+                 VerticalScrollBarVisibility="Visible" 
+                 FontSize="14" 
+                 Padding="10" 
+                 UseLayoutRounding="False" TextChanged="mainContent_TextChanged"/>
+    </Grid>
+</Window>
