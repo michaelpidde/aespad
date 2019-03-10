@@ -44,7 +44,9 @@ namespace AesPad {
 
         private void saveFile_Click(object sender, RoutedEventArgs e) {
             Encryption enc = new Encryption(sessionPassword);
-            enc.encrypt(mainContent.Text);
+            byte[] cypher = enc.encrypt(mainContent.Text);
+            Console.WriteLine("Encoded: " + Encoding.Default.GetString(cypher));
+            Console.WriteLine("Plain: " + enc.decrypt(cypher));
         }
 
         private void Window_Initialized(object sender, EventArgs e) {

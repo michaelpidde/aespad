@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.IO;
 
 namespace AesPad {
     class Encryption {
-        static int keySize = 256;
-        static int saltSize = 8;
+        private int keySize = 256;
+        private int saltSize = 8;
+        private int ivSize = 16;
         private string pwd;
         private byte[] salt;
 
@@ -17,10 +15,14 @@ namespace AesPad {
             this.pwd = pwd;
         }
 
-        private byte[] getKey() {
-            salt = new byte[saltSize];
-            Random rand = new Random();
-            rand.NextBytes(salt);
+        private byte[] getKey(byte[] inSalt = null) {
+            if(inSalt == null) {
+                salt = new byte[saltSize];
+                Random rand = new Random();
+                rand.NextBytes(salt);
+            } else {
+                salt = inSalt;
+            }
 
             PasswordDeriveBytes key = new PasswordDeriveBytes(Encoding.Unicode.GetBytes(pwd), salt, "SHA256", 2);
             return key.GetBytes(keySize / 8);
@@ -30,15 +32,17 @@ namespace AesPad {
             byte[] key = getKey();
             byte[] ret = new byte[0];
             using(AesManaged aes = new AesManaged()) {
+                byte[] cypher = encryptToAes(text, key, aes.IV);
+                ret = new byte[aes.IV.Length + salt.Length + cypher.Length];
                 aes.KeySize = keySize;
-                ret.Concat(aes.IV);
-                ret.Concat(salt);
-                ret.Concat(encryptToAes(text, key, aes.IV));
+                Buffer.BlockCopy(aes.IV, 0, ret, 0, ivSize);
+                Buffer.BlockCopy(salt, 0, ret, ivSize - 1, saltSize);
+                Buffer.BlockCopy(cypher, 0, ret, ivSize + saltSize - 1, cypher.Length);
             }
             return ret;
         }
 
-        static byte[] encryptToAes(string text, byte[] key, byte[] iv) {
+        private byte[] encryptToAes(string text, byte[] key, byte[] iv) {
             if(text == null || text.Length <= 0)
                 throw new ArgumentNullException("text");
             if(key == null || key.Length <= 0)
@@ -51,6 +55,7 @@ namespace AesPad {
             using(AesManaged aes = new AesManaged()) {
                 aes.Key = key;
                 aes.IV = iv;
+                aes.Padding = PaddingMode.PKCS7;
 
                 ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
 
@@ -68,7 +73,14 @@ namespace AesPad {
         }
 
         public string decrypt(byte[] cypher) {
-            
+            byte[] iv = new byte[ivSize];
+            Buffer.BlockCopy(cypher, 0, iv, 0, ivSize);
+            byte[] salt = new byte[saltSize];
+            Buffer.BlockCopy(cypher, ivSize - 1, salt, 0, saltSize);
+            byte[] cleanCypher = new byte[cypher.Length - ivSize - saltSize];
+            Buffer.BlockCopy(cypher, ivSize + saltSize - 1, cleanCypher, 0, cleanCypher.Length);
+            byte[] key = getKey(salt);
+            return decryptFromAes(cleanCypher, key, iv);
         }
 
         private string decryptFromAes(byte[] encrypted, byte[] key, byte[] iv) {
@@ -84,6 +96,7 @@ namespace AesPad {
             using(AesManaged aes = new AesManaged()) {
                 aes.Key = key;
                 aes.IV = iv;
+                aes.Padding = PaddingMode.PKCS7;
 
                 ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
