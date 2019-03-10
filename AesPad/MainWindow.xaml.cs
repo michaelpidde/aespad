@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
+using System.Security.Cryptography;
 
 namespace AesPad {
     public partial class MainWindow : Window {
@@ -45,8 +45,7 @@ namespace AesPad {
         private void saveFile_Click(object sender, RoutedEventArgs e) {
             Encryption enc = new Encryption(sessionPassword);
             byte[] cypher = enc.encrypt(mainContent.Text);
-            Console.WriteLine("Encoded: " + Encoding.Default.GetString(cypher));
-            Console.WriteLine("Plain: " + enc.decrypt(cypher));
+            System.IO.File.WriteAllBytes(fullFilePath, cypher);
         }
 
         private void Window_Initialized(object sender, EventArgs e) {
@@ -90,11 +89,28 @@ namespace AesPad {
 
             if(result == true) {
                 fullFilePath = dialog.FileName;
-                isNewFile = false;
-                mainContent.Text = System.IO.File.ReadAllText(fullFilePath);
-                Title = title + " - " + fullFilePath;
-                contentChanged = false;
-                saveFile.IsEnabled = true;
+                bool loaded = false;
+                Encryption enc = new Encryption(sessionPassword);
+                string content = "";
+                try {
+                    content = enc.decrypt(System.IO.File.ReadAllBytes(fullFilePath));
+                    loaded = true;
+                } catch(CryptographicException e) {
+                    MessageBox.Show(
+                        "Error decrypting file. The session password may be incorrect.", 
+                        "Error decrypting file.", 
+                        MessageBoxButton.OK, 
+                        MessageBoxImage.Error);
+                }
+                if(loaded) {
+                    isNewFile = false;
+                    mainContent.Text = content;
+                    Title = title + " - " + fullFilePath;
+                    contentChanged = false;
+                    saveFile.IsEnabled = true;
+                } else {
+                    fullFilePath = "";
+                }
             }
         }
         #endregion
