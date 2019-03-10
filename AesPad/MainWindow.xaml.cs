@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using System.Security.Cryptography;
+using System.IO;
 
 namespace AesPad {
     public partial class MainWindow : Window {
@@ -43,9 +44,7 @@ namespace AesPad {
         }
 
         private void saveFile_Click(object sender, RoutedEventArgs e) {
-            Encryption enc = new Encryption(sessionPassword);
-            byte[] cypher = enc.encrypt(mainContent.Text);
-            System.IO.File.WriteAllBytes(fullFilePath, cypher);
+            fileSave();
         }
 
         private void Window_Initialized(object sender, EventArgs e) {
@@ -54,6 +53,21 @@ namespace AesPad {
 
         private void ResetPassword_Click(object sender, RoutedEventArgs e) {
             showPasswordPrompt();
+        }
+
+        private void SaveFileAs_Click(object sender, RoutedEventArgs e) {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.InitialDirectory = "C:\\";
+            dialog.Filter = "AesPad files (*apd)|*.apd";
+            dialog.CreatePrompt = true;
+            bool? result = dialog.ShowDialog();
+
+            if(result == true) {
+                fullFilePath = dialog.FileName;
+                fileSave();
+                Title = title + " - " + fullFilePath;
+                saveFile.IsEnabled = true;
+            }
         }
         #endregion
 
@@ -87,6 +101,14 @@ namespace AesPad {
             contentChanged = false;
         }
 
+        private void fileSave() {
+            Encryption enc = new Encryption(sessionPassword);
+            byte[] cypher = enc.encrypt(mainContent.Text);
+            File.WriteAllBytes(fullFilePath, cypher);
+            contentChanged = false;
+            isNewFile = false;
+        }
+
         private void fileOpen() {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.InitialDirectory = "C:\\";
@@ -101,7 +123,7 @@ namespace AesPad {
                 Encryption enc = new Encryption(sessionPassword);
                 string content = "";
                 try {
-                    content = enc.decrypt(System.IO.File.ReadAllBytes(fullFilePath));
+                    content = enc.decrypt(File.ReadAllBytes(fullFilePath));
                     loaded = true;
                 } catch(CryptographicException e) {
                     MessageBox.Show(
