@@ -12,6 +12,9 @@
                 <MenuItem x:Name="openFile" Header="_Open" Click="openFile_Click"/>
                 <MenuItem x:Name="saveFile" Header="_Save" IsEnabled="False" Click="saveFile_Click"/>
                 <MenuItem x:Name="saveFileAs" Header="Save _As"/>
+                <MenuItem x:Name="options" Header="O_ptions">
+                    <MenuItem x:Name="resetPassword" Header="_Reset Session Password" Click="ResetPassword_Click"/>
+                </MenuItem>
                 <MenuItem x:Name="close" Header="_Close" Click="close_Click"/>
             </MenuItem>
             <MenuItem Header="_Help" Height="30">

@@ -49,13 +49,21 @@ namespace AesPad {
         }
 
         private void Window_Initialized(object sender, EventArgs e) {
-            this.Hide();
-            PasswordPromp pwd = new PasswordPromp();
-            pwd.Show();
+            showPasswordPrompt();
+        }
+
+        private void ResetPassword_Click(object sender, RoutedEventArgs e) {
+            showPasswordPrompt();
         }
         #endregion
 
         #region Helpers
+        private void showPasswordPrompt() {
+            Application.Current.MainWindow.Hide();
+            PasswordPromp pwd = new PasswordPromp();
+            pwd.Show();
+        }
+
         private MessageBoxResult showDiscardWarning() {
             return MessageBox.Show("Discard unsaved changes?", "Unsaved Changes",
                 MessageBoxButton.OKCancel,
