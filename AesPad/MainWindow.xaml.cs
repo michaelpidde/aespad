@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using Microsoft.Win32;
 using System.Security.Cryptography;
 using System.IO;
+using System.Text;
 
 namespace AesPad {
     public partial class MainWindow : Window {
@@ -49,6 +50,11 @@ namespace AesPad {
 
         private void Window_Initialized(object sender, EventArgs e) {
             showPasswordPrompt();
+
+            Encryption enc = new Encryption(sessionPassword);
+            byte[] cypher = enc.encrypt("This is a new encrypted file.\nThis is a new line in the text.\nHopefully we won't lose data.");
+            Console.WriteLine("CYPHER: " + Encoding.Default.GetString(cypher));
+            Console.WriteLine("PLAIN: " + enc.decrypt(cypher));
         }
 
         private void ResetPassword_Click(object sender, RoutedEventArgs e) {

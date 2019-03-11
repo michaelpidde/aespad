@@ -32,12 +32,14 @@ namespace AesPad {
             byte[] key = getKey();
             byte[] ret = new byte[0];
             using(AesManaged aes = new AesManaged()) {
+                aes.KeySize = keySize;
+                aes.BlockSize = 128;
+                aes.Mode = CipherMode.CBC;
                 byte[] cypher = encryptToAes(text, key, aes.IV);
                 ret = new byte[aes.IV.Length + salt.Length + cypher.Length];
-                aes.KeySize = keySize;
                 Buffer.BlockCopy(aes.IV, 0, ret, 0, ivSize);
-                Buffer.BlockCopy(salt, 0, ret, ivSize - 1, saltSize);
-                Buffer.BlockCopy(cypher, 0, ret, ivSize + saltSize - 1, cypher.Length);
+                Buffer.BlockCopy(salt, 0, ret, ivSize, saltSize);
+                Buffer.BlockCopy(cypher, 0, ret, ivSize + saltSize, cypher.Length);
             }
             return ret;
         }
@@ -53,6 +55,9 @@ namespace AesPad {
             byte[] encrypted;
 
             using(AesManaged aes = new AesManaged()) {
+                aes.KeySize = keySize;
+                aes.BlockSize = 128;
+                aes.Mode = CipherMode.CBC;
                 aes.Key = key;
                 aes.IV = iv;
                 aes.Padding = PaddingMode.PKCS7;
@@ -76,9 +81,9 @@ namespace AesPad {
             byte[] iv = new byte[ivSize];
             Buffer.BlockCopy(cypher, 0, iv, 0, ivSize);
             byte[] salt = new byte[saltSize];
-            Buffer.BlockCopy(cypher, ivSize - 1, salt, 0, saltSize);
+            Buffer.BlockCopy(cypher, ivSize, salt, 0, saltSize);
             byte[] cleanCypher = new byte[cypher.Length - ivSize - saltSize];
-            Buffer.BlockCopy(cypher, ivSize + saltSize - 1, cleanCypher, 0, cleanCypher.Length);
+            Buffer.BlockCopy(cypher, ivSize + saltSize, cleanCypher, 0, cleanCypher.Length);
             byte[] key = getKey(salt);
             return decryptFromAes(cleanCypher, key, iv);
         }
