@@ -13,6 +13,7 @@ namespace AesPad {
         private bool isNewFile = true;
         private string title = "AesPad";
         public string sessionPassword = "";
+        public bool loadedFromAssociation = false;
 
         public MainWindow() {
             InitializeComponent();
@@ -49,6 +50,11 @@ namespace AesPad {
         }
 
         private void Window_Initialized(object sender, EventArgs e) {
+            if(Environment.GetCommandLineArgs().Length > 1) {
+                fullFilePath = Environment.GetCommandLineArgs()[1];
+                loadedFromAssociation = true;
+            }
+
             showPasswordPrompt();
         }
 
@@ -120,28 +126,32 @@ namespace AesPad {
 
             if(result == true) {
                 fullFilePath = dialog.FileName;
-                bool loaded = false;
-                Encryption enc = new Encryption(sessionPassword);
-                string content = "";
-                try {
-                    content = enc.decrypt(File.ReadAllBytes(fullFilePath));
-                    loaded = true;
-                } catch(CryptographicException e) {
-                    MessageBox.Show(
-                        "Error decrypting file. The session password may be incorrect.", 
-                        "Error decrypting file.", 
-                        MessageBoxButton.OK, 
-                        MessageBoxImage.Error);
-                }
-                if(loaded) {
-                    isNewFile = false;
-                    mainContent.Text = content;
-                    Title = title + " - " + fullFilePath;
-                    contentChanged = false;
-                    saveFile.IsEnabled = true;
-                } else {
-                    fullFilePath = "";
-                }
+                loadAndDecrypt();
+            }
+        }
+
+        public void loadAndDecrypt() {
+            bool loaded = false;
+            Encryption enc = new Encryption(sessionPassword);
+            string content = "";
+            try {
+                content = enc.decrypt(File.ReadAllBytes(fullFilePath));
+                loaded = true;
+            } catch(CryptographicException e) {
+                MessageBox.Show(
+                    "Error decrypting file. The session password may be incorrect.",
+                    "Error decrypting file.",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            if(loaded) {
+                isNewFile = false;
+                mainContent.Text = content;
+                Title = title + " - " + fullFilePath;
+                contentChanged = false;
+                saveFile.IsEnabled = true;
+            } else {
+                fullFilePath = "";
             }
         }
         #endregion

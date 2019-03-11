@@ -12,6 +12,8 @@ namespace AesPad {
 
         private void enter_Click(object sender, RoutedEventArgs e) {
             ((MainWindow)Application.Current.MainWindow).sessionPassword = password.Password;
+            if(((MainWindow)Application.Current.MainWindow).loadedFromAssociation)
+                ((MainWindow)Application.Current.MainWindow).loadAndDecrypt();
             ((MainWindow)Application.Current.MainWindow).Show();
             this.Close();
         }
