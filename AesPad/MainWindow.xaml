@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:AesPad"
         Title="AesPad" Height="600" Width="1000" Initialized="Window_Initialized" Icon="favicon.ico">
     <Window.CommandBindings>
-        <CommandBinding Command="local:CustomCommands.Blur" CanExecute="BlurCommand_CanExecute" Executed="BlurCommand_Executed"/>
+        <CommandBinding Command="local:CustomCommands.Blur" Executed="BlurCommand_Executed"/>
     </Window.CommandBindings>
     <Window.Resources>
         <Style TargetType="TextBox" x:Name="mainContentBlur">
@@ -14,7 +14,7 @@
                 <DataTrigger Binding="{Binding blurContent}" Value="True">
                     <Setter Property="Effect">
                         <Setter.Value>
-                            <BlurEffect RenderingBias="Quality" Radius="10"/>
+                            <BlurEffect RenderingBias="Quality" Radius="15"/>
                         </Setter.Value>
                     </Setter>
                 </DataTrigger>

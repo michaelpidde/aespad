@@ -14,6 +14,7 @@ namespace AesPad {
         private bool isNewFile = true;
         private string title = "AesPad";
         private string filter = "AesPad files (*aspd)|*.aspd";
+        private string hint = "Tip: Hit Alt+B to toggle text window blur for ultra paranoia mode!";
 
         // Bound property in XAML
         public bool blurContent { get; set; }
@@ -72,6 +73,8 @@ namespace AesPad {
             if(Environment.GetCommandLineArgs().Length > 1) {
                 fullFilePath = Environment.GetCommandLineArgs()[1];
                 loadedFromAssociation = true;
+            } else {
+                mainContent.Text = hint;
             }
 
             showPasswordPrompt();
@@ -109,9 +112,6 @@ namespace AesPad {
             OnPropertyChanged("blurContent");
         }
 
-        private void BlurCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = true;
-        }
         private void BlurCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
             Blur_Click(sender, e);
         }
@@ -134,6 +134,7 @@ namespace AesPad {
                 MessageBoxImage.Warning,
                 MessageBoxResult.Cancel,
                 MessageBoxOptions.DefaultDesktopOnly);
+
         }
 
         private MessageBoxResult showPasswordChangedWarning() {
@@ -146,7 +147,11 @@ namespace AesPad {
         }
 
         private bool discardCondition() {
-            if((contentChanged && showDiscardWarning() == MessageBoxResult.OK) || !contentChanged)
+            bool discard = mainContent.Text == hint || 
+                (contentChanged && showDiscardWarning() == MessageBoxResult.OK) ||
+                !contentChanged;
+
+            if(discard)
                 return true;
             else
                 return false;
