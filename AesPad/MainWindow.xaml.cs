@@ -4,22 +4,29 @@ using System.Windows.Controls;
 using Microsoft.Win32;
 using System.Security.Cryptography;
 using System.IO;
-using System.Text;
+using System.ComponentModel;
+using System.Windows.Input;
 
 namespace AesPad {
-    public partial class MainWindow : Window {
+    public partial class MainWindow : Window, INotifyPropertyChanged {
         private string fullFilePath = "";
         private bool contentChanged = false;
         private bool isNewFile = true;
         private string title = "AesPad";
         private string filter = "AesPad files (*aspd)|*.aspd";
-        public string sessionPassword = "";
+
+        // Bound property in XAML
+        public bool blurContent { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged = delegate {};
 
         // These public variables are accessed by the PasswordPrompt form.
+        public string sessionPassword = "";
         public bool sessionPasswordChanged = false;
         public bool loadedFromAssociation = false;
 
         public MainWindow() {
+            DataContext = this;
+            blurContent = false;
             InitializeComponent();
         }
 
@@ -96,9 +103,25 @@ namespace AesPad {
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
         }
+
+        private void Blur_Click(object sender, RoutedEventArgs e) {
+            blurContent = !blurContent;
+            OnPropertyChanged("blurContent");
+        }
+
+        private void BlurCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+            e.CanExecute = true;
+        }
+        private void BlurCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
+            Blur_Click(sender, e);
+        }
         #endregion
 
         #region Helpers
+        private void OnPropertyChanged(string property) {
+            PropertyChanged(this, new PropertyChangedEventArgs(property));
+        }
+
         private void showPasswordPrompt() {
             Application.Current.MainWindow.Hide();
             PasswordPromp pwd = new PasswordPromp();
@@ -168,7 +191,7 @@ namespace AesPad {
             try {
                 content = enc.decrypt(File.ReadAllBytes(fullFilePath));
                 loaded = true;
-            } catch(CryptographicException e) {
+            } catch(CryptographicException) {
                 MessageBox.Show(
                     "Error decrypting file. The session password may be incorrect.",
                     "Error decrypting file.",

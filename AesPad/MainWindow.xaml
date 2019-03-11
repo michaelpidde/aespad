@@ -4,7 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AesPad"
-        Title="AesPad" Height="600" Width="1000" Initialized="Window_Initialized">
+        Title="AesPad" Height="600" Width="1000" Initialized="Window_Initialized" Icon="favicon.ico">
+    <Window.CommandBindings>
+        <CommandBinding Command="local:CustomCommands.Blur" CanExecute="BlurCommand_CanExecute" Executed="BlurCommand_Executed"/>
+    </Window.CommandBindings>
+    <Window.Resources>
+        <Style TargetType="TextBox" x:Name="mainContentBlur">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding blurContent}" Value="True">
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <BlurEffect RenderingBias="Quality" Radius="10"/>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Menu x:Name="mainMenu" Height="30" VerticalAlignment="Top">
             <MenuItem Header="_File" Height="30">
@@ -14,6 +30,7 @@
                 <MenuItem x:Name="saveFileAs" Header="Save _As..." Click="SaveFileAs_Click"/>
                 <MenuItem x:Name="options" Header="O_ptions">
                     <MenuItem x:Name="resetPassword" Header="_Reset Session Password" Click="ResetPassword_Click"/>
+                    <MenuItem x:Name="blur" Header="_Blur Content" Command="local:CustomCommands.Blur"/>
                 </MenuItem>
                 <MenuItem x:Name="close" Header="_Close" Click="close_Click"/>
             </MenuItem>
@@ -31,6 +48,7 @@
                  VerticalScrollBarVisibility="Visible" 
                  FontSize="14" 
                  Padding="10" 
-                 UseLayoutRounding="False" TextChanged="mainContent_TextChanged"/>
+                 UseLayoutRounding="False" TextChanged="mainContent_TextChanged">
+        </TextBox>
     </Grid>
 </Window>
