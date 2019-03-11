@@ -45,7 +45,7 @@ namespace AesPad {
         }
 
         private byte[] encryptToAes(string text, byte[] key, byte[] iv) {
-            if(text == null || text.Length <= 0)
+            if(text == null)
                 throw new ArgumentNullException("text");
             if(key == null || key.Length <= 0)
                 throw new ArgumentNullException("key");

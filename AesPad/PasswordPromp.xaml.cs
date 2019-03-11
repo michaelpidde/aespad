@@ -15,6 +15,7 @@ namespace AesPad {
             if(((MainWindow)Application.Current.MainWindow).loadedFromAssociation)
                 ((MainWindow)Application.Current.MainWindow).loadAndDecrypt();
             ((MainWindow)Application.Current.MainWindow).Show();
+            ((MainWindow)Application.Current.MainWindow).mainContent.Focus();
             this.Close();
         }
     }
