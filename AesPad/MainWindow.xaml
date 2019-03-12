@@ -7,6 +7,7 @@
         Title="AesPad" Height="600" Width="1000" Initialized="Window_Initialized" Icon="favicon.ico">
     <Window.CommandBindings>
         <CommandBinding Command="local:CustomCommands.Blur" Executed="BlurCommand_Executed"/>
+        <CommandBinding Command="local:CustomCommands.Time" Executed="TimeCommand_Executed"/>
     </Window.CommandBindings>
     <Window.Resources>
         <Style TargetType="TextBox" x:Name="mainContentBlur">
@@ -34,12 +35,15 @@
                 </MenuItem>
                 <MenuItem x:Name="close" Header="_Close" Click="close_Click"/>
             </MenuItem>
+            <MenuItem Header="_Edit" Height="30">
+                <MenuItem x:Name="insertTime" Header="Insert _Time" Command="local:CustomCommands.Time"/>
+            </MenuItem>
             <MenuItem Header="_Help" Height="30">
                 <MenuItem Header="_About" Click="MenuItem_Click"/>
             </MenuItem>
         </Menu>
         <TextBox x:Name="mainContent" 
-                 Margin="0,30,0,0" 
+                 Margin="0,30,0,30" 
                  TextWrapping="Wrap" 
                  AcceptsReturn="True" 
                  AcceptsTab="True" 
@@ -48,7 +52,9 @@
                  VerticalScrollBarVisibility="Visible" 
                  FontSize="14" 
                  Padding="10" 
-                 UseLayoutRounding="False" TextChanged="mainContent_TextChanged">
-        </TextBox>
+                 UseLayoutRounding="False" TextChanged="mainContent_TextChanged" BorderThickness="0"/>
+        <StatusBar x:Name="status" VerticalAlignment="Bottom" Height="30" RenderTransformOrigin="0.5,0.5" BorderThickness="0">
+            <Label Content="{Binding statusText}" Height="16" Width="200" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="0" Margin="5,0,0,0"/>
+        </StatusBar>
     </Grid>
 </Window>

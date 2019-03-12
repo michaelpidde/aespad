@@ -18,6 +18,7 @@ namespace AesPad {
 
         // Bound property in XAML
         public bool blurContent { get; set; }
+        public string statusText { get; set; }
         public event PropertyChangedEventHandler PropertyChanged = delegate {};
 
         // These public variables are accessed by the PasswordPrompt form.
@@ -111,15 +112,32 @@ namespace AesPad {
             blurContent = !blurContent;
             OnPropertyChanged("blurContent");
         }
-
         private void BlurCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
             Blur_Click(sender, e);
+        }
+
+        private void InsertTime_Click(object sender, RoutedEventArgs e) {
+            string insert = systemDateTime();
+            int index = mainContent.SelectionStart;
+            mainContent.Text = mainContent.Text.Insert(index, insert);
+            mainContent.SelectionStart = index + insert.Length;
+        }
+        private void TimeCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
+            InsertTime_Click(sender, e);
         }
         #endregion
 
         #region Helpers
         private void OnPropertyChanged(string property) {
             PropertyChanged(this, new PropertyChangedEventArgs(property));
+        }
+
+        private string systemTime() {
+            return DateTime.Now.ToString("HH:mm:ss");
+        }
+
+        private string systemDateTime() {
+            return DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
         }
 
         private void showPasswordPrompt() {
@@ -173,6 +191,8 @@ namespace AesPad {
             File.WriteAllBytes(fullFilePath, cypher);
             contentChanged = false;
             isNewFile = false;
+            statusText = "Saved at " + systemTime();
+            OnPropertyChanged("statusText");
         }
 
         private void fileOpen() {
