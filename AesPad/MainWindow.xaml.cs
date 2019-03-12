@@ -101,29 +101,28 @@ namespace AesPad {
             }
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e) {
+        private void About_Click(object sender, RoutedEventArgs e) {
             MessageBox.Show("AesPad\n\u00a9 2019 Full Ration Productions LLC. All Rights Reserved.\n\n" +
                 "This software is provided under no warranty expressed or implied.", "About " + title, 
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
         }
 
-        private void Blur_Click(object sender, RoutedEventArgs e) {
+        private void BlurCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
             blurContent = !blurContent;
             OnPropertyChanged("blurContent");
         }
-        private void BlurCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
-            Blur_Click(sender, e);
-        }
 
-        private void InsertTime_Click(object sender, RoutedEventArgs e) {
+        private void TimeCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
             string insert = systemDateTime();
             int index = mainContent.SelectionStart;
             mainContent.Text = mainContent.Text.Insert(index, insert);
             mainContent.SelectionStart = index + insert.Length;
         }
-        private void TimeCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
-            InsertTime_Click(sender, e);
+
+        private void BackupCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
+            Backup backup = new Backup();
+            backup.Show();
         }
         #endregion
 

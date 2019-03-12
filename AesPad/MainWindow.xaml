@@ -8,6 +8,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="local:CustomCommands.Blur" Executed="BlurCommand_Executed"/>
         <CommandBinding Command="local:CustomCommands.Time" Executed="TimeCommand_Executed"/>
+        <CommandBinding Command="local:CustomCommands.Backup" Executed="BackupCommand_Executed"/>
     </Window.CommandBindings>
     <Window.Resources>
         <Style TargetType="TextBox" x:Name="mainContentBlur">
@@ -38,8 +39,11 @@
             <MenuItem Header="_Edit" Height="30">
                 <MenuItem x:Name="insertTime" Header="Insert _Time" Command="local:CustomCommands.Time"/>
             </MenuItem>
+            <MenuItem Header="_Tools" Height="30">
+                <MenuItem x:Name="backup" Header="Back_up" Command="local:CustomCommands.Backup"/>
+            </MenuItem>
             <MenuItem Header="_Help" Height="30">
-                <MenuItem Header="_About" Click="MenuItem_Click"/>
+                <MenuItem x:Name="about" Header="_About" Click="About_Click"/>
             </MenuItem>
         </Menu>
         <TextBox x:Name="mainContent" 

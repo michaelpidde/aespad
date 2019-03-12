@@ -19,5 +19,14 @@ namespace AesPad {
                 new KeyGesture(Key.T, ModifierKeys.Alt)
             }
         );
+
+        public static readonly RoutedUICommand Backup = new RoutedUICommand(
+            "Backup",
+            "Backup",
+            typeof(CustomCommands),
+            new InputGestureCollection() {
+                new KeyGesture(Key.U, ModifierKeys.Alt)
+            }
+        );
     }
 }
