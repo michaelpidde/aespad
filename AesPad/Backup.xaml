@@ -22,7 +22,7 @@
         <Label Content="Notes: &#xD;&#xA;    * pscp.exe must be in your PATH variable for this utility to work.&#xD;&#xA;    * Server host key must be cached in the registry (run the pscp command once manually to do this)&#xD;&#xA;    * Password will not be saved." HorizontalAlignment="Left" Margin="49,10,0,0" VerticalAlignment="Top"/>
         <Label Content="Local Path:" HorizontalAlignment="Left" Margin="327,159,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="backupLocalPath" HorizontalAlignment="Left" Height="23" Margin="398,162,0,0" TextWrapping="NoWrap" MaxLines="1" VerticalAlignment="Top" Width="218"/>
-        <TextBox x:Name="output" HorizontalAlignment="Left" Height="223" Margin="10,224,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="606" IsReadOnly="True"/>
+        <TextBox x:Name="output" HorizontalAlignment="Left" Height="223" Margin="10,224,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="606" IsReadOnly="True" VerticalScrollBarVisibility="Visible"/>
         <Button x:Name="localPathSelect" Content="Select Path" HorizontalAlignment="Left" Margin="541,194,0,0" VerticalAlignment="Top" Width="75" Click="LocalPathSelect_Click"/>
     </Grid>
 </Window>
